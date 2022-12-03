@@ -1,0 +1,23 @@
+!!!
+-require_relative "page.rb"
+%head
+  %link{ href:"../2022.css", rel:'stylesheet', type:'text/css' }
+
+%h1 #{TITLE} の 図
+%a{ href:"./index.html" } 本文
+
+-EXAMPLES.each.with_index do |src,ix|
+  %h2 ##{ix}
+  %p
+    src:
+    %code=src
+    expected:
+    %code=solve(src)
+  %div.svg
+    -fig=Fig.new(src, 600)
+    %svg{ height:fig.pix_h, width:fig.pix_w, viewBox:fig.vbox }
+      %g{ style:"fill:none;stroke-width:#{fig.pix(1)}", stroke:"black"}
+        -fig.triangles.each do |t|
+          %polygon{ points:t.points.map{ |e| "#{e.real} #{e.imag}" }.join(",") }
+    
+  
