@@ -28,6 +28,7 @@ Square = Struct.new( :bottom, :size, :bits ) do
   def top; bottom+size*(1+1i); end
   def right; bottom+size*(1); end
   def left; bottom+size*(1i); end
+  def center; (bottom+top)/2; end
   def im_range; SRange.new(bottom.imag, size); end
   def re_range; SRange.new(bottom.real, size); end
   def intersect?(o)
@@ -97,7 +98,16 @@ class Fig
         1 => "url(#max)",
         2 => "url(#neibour)",
       }[e.bits]
-      { p: e.corners.map{ |e| e*rot }, fill: fill }
+      fontsize = e.size*0.75 / [e.size.to_i.to_s.size,3].max
+      c = e.center * rot + fontsize  * 0.5i
+      { 
+        p: e.corners.map{ |e| e*rot }, 
+        fill: fill,
+        fontsize: fontsize,
+        tx:c.real, 
+        ty:c.imag,
+        size:e.size.to_i,
+      }
     }
   end
 
