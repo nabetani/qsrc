@@ -31,24 +31,46 @@ Square = Struct.new( :bottom, :size, :bits ) do
   end
 end
 
-def canPlace(placed,can)
+def can_place(placed,can)
   placed.all?{ |s| ! s.intersect?(can) }
 end
 
-def place( placed, size )
-  (0...).each do |reim|
-    (0..reim).each do |re|
-      im = reim-re
-      candidate = Square.new( re+im*1i, size, 0 )
-      return candidate if canPlace(placed,candidate)
+class Placer
+  def initialize
+    @placed = []
+    update_bottoms([0],[0])
+  end
+
+  def update_bottoms(re,im)
+    @reals = re
+    @imags = im
+    c = @reals.flat_map{ |r| @imags.flat_map{ |i| r+i*1i } }
+    @bottoms = c.sort_by{ |x| x.real+x.imag }
+  end
+
+  attr_reader( :placed )
+  def place(size)
+    @bottoms.each do |bottom|
+      can = Square.new( bottom, size, 0 )
+      if can_place(@placed, can)
+        @placed << can
+        reals = @reals | [can.top.real, can.bottom.real]
+        imags = @imags | [can.top.imag, can.bottom.imag]
+        if reals != @reals || imags != @imags
+          update_bottoms( reals, imags )
+        end
+        break
+      end
     end
   end
 end
 
 def placeSquares(sizes)
-  sizes.each.with_object([]) do |size,o|
-    o << place(o,size)
+  placer = Placer.new
+  sizes.each do |size|
+    placer.place(size)
   end
+  placer.placed
 end
 
 def solve(src)
