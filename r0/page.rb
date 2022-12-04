@@ -87,7 +87,7 @@ class Fig
     @w = [@ysize, @xsize].min
   end
   
-  def rot; 0.5+0.5i; end
+  def rot; -0.5-0.5i; end
 
   def pad; @w/10.0; end
 
