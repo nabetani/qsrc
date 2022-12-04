@@ -6,7 +6,6 @@ def one_example(seed)
   ceil = (2**(rng.rand(30..60)/10.0)).floor
   nums = Array.new(size){ rng.rand(1..ceil) }
   max = nums.max
-  $stderr.puts( {size:size, ceil:ceil, max:max, nums:nums}.inspect )
   while nums.count(max) != 1 do
     nums[nums.index(nums.max)] -= rng.rand(1..(max-1))
   end
