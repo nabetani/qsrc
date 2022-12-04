@@ -86,7 +86,7 @@ class Fig
     @squares.each do |s|
       s.bits |= 2 if m.neibour?(s)
     end
-    points = @squares.flat_map{ |s| s.corners.map{ |e| e*rot }}
+    points = @squares.flat_map{ |s| s.corners.map{ |e| rot(e) }}
     @yrange = points.map{ |s| s.imag }.minmax
     @ysize = @yrange[1]-@yrange[0]
     @xrange = points.map{ |s| s.real }.minmax
@@ -94,7 +94,7 @@ class Fig
     @w = [@ysize, @xsize].min
   end
   
-  def rot; -0.5-0.5i; end
+  def rot(e); (e*(0.5+0.5i)).conjugate; end
 
   def pad; @w/10.0; end
 
@@ -106,9 +106,9 @@ class Fig
         2 => "url(#neibour)",
       }[e.bits]
       fontsize = e.size*0.75 / [e.size.to_i.to_s.size,3].max
-      c = e.center * rot + fontsize  * 0.5i
+      c = rot(e.center) + fontsize  * 0.5i
       { 
-        p: e.corners.map{ |e| e*rot }, 
+        p: e.corners.map{ |e| rot(e) }, 
         fill: fill,
         fontsize: fontsize,
         tx:c.real, 
