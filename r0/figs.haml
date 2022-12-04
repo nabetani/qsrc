@@ -12,7 +12,8 @@
 %a{ href:"./index.html" } 本文
 
 -EXAMPLES.each.with_index do |src,ix|
-  %h2 ##{ix}
+  %h2
+    %a{ name:ix} ##{ix}
   %p
     src:
     %code=src
