@@ -9,6 +9,7 @@ EXAMPLES = [
   "5,8,7,11,1,3,2,8,12,4,6,10",
   [*1..20].shuffle(random:rng).join(","),
 ]
+
 SRange = Struct.new( :lo, :size ) do
   def hi; lo+size; end
   def intersect?(o)
@@ -67,6 +68,12 @@ def solve(src)
   r = squares.select{ |s| m.neibour?(s) }.map{ |e| e.size.to_i }.sort.join(",")
   $stderr.puts( {src:src, sizes:sizes, m:m, r:r}.inspect )
   r
+end
+
+def cpp_text
+  EXAMPLES.each.with_index.inject("") do |acc,(ex,ix)|
+    acc+"/*#{ix}*/ test( #{ex.inspect}, #{solve(ex).inspect} );\n"
+  end
 end
 
 class Fig
