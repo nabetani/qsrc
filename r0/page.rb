@@ -1,9 +1,5 @@
 EXAMPLE_INPUT="9,3,8,2,7,1"
 
-def solve(s)
-  "NOT_IMPL"
-end
-
 TITLE = "正方形を谷に詰める 2022.12.x"
 
 rng = Random.new(1)
@@ -20,7 +16,10 @@ SRange = Struct.new( :lo, :size ) do
   def intersect?(o)
     min = [lo, o.lo].max
     max = [hi, o.hi].min
-    0<max-min
+    min<max
+  end
+  def touching?(o)
+    lo==o.hi || hi==o.lo
   end
 end
 
@@ -35,6 +34,10 @@ Square = Struct.new( :bottom, :size, :bits ) do
   def re_range; SRange.new(bottom.real, size); end
   def intersect?(o)
     im_range.intersect?(o.im_range) && re_range.intersect?(o.re_range)
+  end
+  def neibour?(o)
+    (im_range.intersect?(o.im_range) && re_range.touching?(o.re_range)) || 
+    (re_range.intersect?(o.re_range) && im_range.touching?(o.im_range))
   end
 end
 
@@ -58,11 +61,25 @@ def placeSquares(sizes)
   end
 end
 
+def solve(src)
+  sizes = src.split(",").map(&:to_r)
+  squares = placeSquares(sizes)
+  m = squares.max_by{ |s| s.size }
+  r = squares.select{ |s| m.neibour?(s) }.map{ |e| e.size.to_i }.sort.join(",")
+  $stderr.puts( {src:src, sizes:sizes, m:m, r:r}.inspect )
+  r
+end
+
 class Fig
   def initialize(src, w_in_pix)
     @w_in_pix = w_in_pix
     sizes = src.split(",").map(&:to_r)
     @squares = placeSquares(sizes)
+    m = @squares.max_by{ |s| s.size }
+    m.bits = 1
+    @squares.each do |s|
+      s.bits |= 2 if m.neibour?(s)
+    end
     points = @squares.flat_map{ |s| s.corners.map{ |e| e*rot }}
     @yrange = points.map{ |s| s.imag }.minmax
     @ysize = @yrange[1]-@yrange[0]
@@ -77,7 +94,12 @@ class Fig
 
   def squares
     @squares.map{ |e|
-      e.corners.map{ |e| e*rot }
+      fill = {
+        0 => "url(#normal)",
+        1 => "url(#max)",
+        2 => "url(#neibour)",
+      }[e.bits]
+      { p: e.corners.map{ |e| e*rot }, fill: fill }
     }
   end
 

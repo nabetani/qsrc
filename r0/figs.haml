@@ -22,11 +22,17 @@
     -fig=Fig.new(src, 600)
     %svg.svg{ height:fig.pix_h, width:fig.pix_w, viewBox:fig.vbox }
       %defs
-        %radialGradient{ cx:0, cy:0, id:"green", r:1 }
+        %radialGradient{ cx:0, cy:0, id:"normal", r:1 }
           %stop{ offset:"0%", "stop-color"=>"#2f2" }
           %stop{ offset:"100%", "stop-color"=>"#afa" }
-      %g{ "stroke-width"=>fig.pix(1), stroke:"black", fill:"url(#green)"}
+        %radialGradient{ cx:0, cy:0, id:"max", r:1 }
+          %stop{ offset:"0%", "stop-color"=>"#22f" }
+          %stop{ offset:"100%", "stop-color"=>"#aaf" }
+        %radialGradient{ cx:0, cy:0, id:"neibour", r:1 }
+          %stop{ offset:"0%", "stop-color"=>"#f22" }
+          %stop{ offset:"100%", "stop-color"=>"#faa" }
+      %g{ "stroke-width"=>fig.pix(1), stroke:"black"}
         -fig.squares.each do |t|
-          %polygon{ points:t.map{ |e| "#{e.real.to_f} #{e.imag.to_f}" }.join(",") }
+          %polygon{ fill:t[:fill], points:t[:p].map{ |e| "#{e.real.to_f} #{e.imag.to_f}" }.join(",") }
     
   
