@@ -1,4 +1,4 @@
-EXAMPLE_INPUT="9,3,8,2,7,1"
+EXAMPLE_INPUT="3,5,7,9,4,6,6,8"
 
 TITLE = "正方形を谷に詰める 2022.12.x"
 
@@ -6,9 +6,7 @@ rng = Random.new(1)
 
 EXAMPLES = [
   EXAMPLE_INPUT,
-  [*1..20].shuffle(random:rng).join(","),
-  [*1..20].shuffle(random:rng).join(","),
-  [*1..20].shuffle(random:rng).join(","),
+  "5,8,7,11,1,3,2,8,12,4,6,10",
   [*1..20].shuffle(random:rng).join(","),
 ]
 SRange = Struct.new( :lo, :size ) do
