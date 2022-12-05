@@ -45,7 +45,7 @@ class Placer
     @reals = re
     @imags = im
     c = @reals.flat_map{ |r| @imags.flat_map{ |i| r+i*1i } }
-    @bottoms = c.sort_by{ |x| x.real+x.imag }
+    @bottoms = c.sort_by{ |x| [x.real+x.imag, x.real] }
   end
 
   attr_reader( :placed )

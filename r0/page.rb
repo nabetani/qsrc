@@ -12,7 +12,7 @@ end
 class Fig
   def initialize(src, w_in_pix)
     @w_in_pix = w_in_pix
-    sizes = src.split(",").map(&:to_r)
+    sizes = src.split(",").map(&:to_i)
     @squares = placeSquares(sizes)
     m = @squares.max_by{ |s| s.size }
     m.bits = 1
