@@ -1,3 +1,4 @@
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -171,11 +172,15 @@ std::string solve(std::string const &src) {
 
 struct tester_t {
   void test(std::string const &src, std::string const &expected) {
+    using c = std::chrono::steady_clock;
+    auto t0 = c::now();
     std::string actual = solve(src);
+    auto dur = c::now() - t0;
     char const *res = actual == expected ? "ok" : "***NG***";
-    printf(R"(%s %s->"%s", wants "%s")"
+    printf(R"(%.4fms %s %s->"%s", wants "%s")"
            "\n",
-           res, src.c_str(), actual.c_str(), expected.c_str());
+           1e-6 * std::uint64_t(dur.count()), res, src.c_str(), actual.c_str(),
+           expected.c_str());
   }
   void run() {
     // clang-format off
@@ -235,7 +240,6 @@ struct tester_t {
     /*53*/ test( "134,162,87,47,160,93,199,125,117,69,45,198,40,35,197,51,55,96,147,145,90,73,72,71,70,146,26,33,7,24", "26,33,51,55,69,145,147,160,162" );
     /*54*/ test( "73,147,153,172,171,70,97,20,124,64,44,17,60,45,131,26,43,173,111,172,25,84,147,52,68,19,40,48,38,37", "26,37,38,48,172" );
     // clang-format on
-    // std::printf("dur = %.3f\n", dur_sum_.count() * 1e-6);
   };
 };
 
