@@ -1,7 +1,7 @@
 require_relative "solve"
 require_relative "examples"
 
-TITLE = "正方形を谷に詰める 2022.12.x"
+TITLE = "正方形を谷に詰める 2023.04.16"
 
 def cpp_text
   EXAMPLES.each.with_index.inject("") do |acc,(ex,ix)|
