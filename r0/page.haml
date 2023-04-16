@@ -1,5 +1,90 @@
 !!!
+-require_relative "page.rb"
+%head
+  %title="#{TITLE}"
+  %link{ rel:"stylesheet", href:"https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@300&display=swap"}
+  %link{ href:"../2023a.css", rel:'stylesheet', type:'text/css' }
 
-%h1 リハビリ0
-%a{ href:"../index.html" } TOP
+%h1 #{TITLE}
+%div.float-right
+  -fig=Fig.new(EXAMPLE_INPUT, 400)
+  %svg.svg{ height:fig.pix_h, width:fig.pix_w, viewBox:fig.vbox }
+    %defs
+      %radialGradient{ cx:0, cy:0, id:"normal", r:1 }
+        %stop{ offset:"0%", "stop-color"=>"#aad" }
+        %stop{ offset:"100%", "stop-color"=>"#dde" }
+      %radialGradient{ cx:0, cy:0, id:"neibour", r:1 }
+        %stop{ offset:"0%", "stop-color"=>"#a77" }
+        %stop{ offset:"100%", "stop-color"=>"#fdd" }
+      %radialGradient{ cx:0, cy:0, id:"max", r:1 }
+        %stop{ offset:"0%", "stop-color"=>"#2f2" }
+        %stop{ offset:"100%", "stop-color"=>"#afa" }
+    %g{ "stroke-width"=>fig.pix(1), stroke:"black", "text-anchor"=>'middle', style:"font-family: 'Red Hat Mono', monospace;"}
+      -fig.squares.each do |t|
+        %polygon{ fill:t[:fill], points:t[:p].map{ |e| "#{e.real.to_f} #{e.imag.to_f}" }.join(",") }
+        %text{ "font-size"=>t[:fontsize], x:t[:tx], y:t[:ty] }=t[:size]
 
+
+%a{ href:"../../index.html" } TOP
+
+
+%h2 問題の概要
+
+%p
+  両側が 45度の斜面になっている谷に、正方形を順に配置する。
+  %br
+  配置のルールは
+%ul
+  %li 谷の斜面と正方形の辺が平行になるように、谷の内側に置く
+  %li すでに配置されている正方形と重なってはいけない
+  %li できるだけ下に置く
+  %li できるだけ左に置く
+
+%p
+  の 4つ。「できるだけ下に置く」が「できるだけ左に置く」より優先。
+  %br
+  全部設置し終えた状況で、最大の正方形（一つしかない）に隣接する（つまり、共有している辺の長さがゼロより大きい）正方形の１辺の長さを、小さい順にリストアップせよ。
+
+%h2 入力
+%p
+  入力はこんな感じ。
+  %br
+  %code=EXAMPLE_INPUT
+  %br
+  正方形の一辺の長さのリストになっている。配置順。コンマ区切りで10進数。
+  %br
+%h2 出力
+%p
+  出力は、面積が最大である正方形に隣接する正方形の一辺の長さを小さい順にコンマ区切りで。
+  %br
+  こんな
+  %br
+  %code=solve(EXAMPLE_INPUT)
+  %br
+  感じ。
+%h2 補足
+%ul
+  %li 不正な入力に対処する必要はない。
+  %li 一辺の長さが最大になる正方形は一個しかない。二個ある場合に対処する必要はない。
+  %li 入力はJSONでもいいし、テスト関数でもいいし、標準入力でもいいし、それ以外のなにかでもいい。
+%h2 サンプルデータ
+%table.sample
+  %tr
+    %th #
+    %th 入力
+    %th 期待
+    %th 図へのリンク
+  -EXAMPLES.each.with_index do |e,ix|
+    %tr
+      %td=ix
+      %td
+        %code=e
+      %td
+        %code=solve(e)
+      %td
+        %a{ href: "./figs.html##{ix}" } 図 ##{ix}
+%h2 C/C++/Java 用のテストデータ
+%textarea.code=cpp_text
+
+%h2 JSON 形式のデータ
+%a{ href:"./data.json"} data.json
